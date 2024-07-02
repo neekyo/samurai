@@ -7,7 +7,7 @@ canvas.height = 576;
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.7;
+const gravity = 0.8;
 
 class Sprite {
   constructor({ position, velocity, color = "red", offset }) {
@@ -34,15 +34,15 @@ class Sprite {
     c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
     // attack box
-    // if (this.isAttacking) {
-    c.fillStyle = "green";
-    c.fillRect(
-      this.attackBox.position.x,
-      this.attackBox.position.y,
-      this.attackBox.width,
-      this.attackBox.height
-    );
-    // }
+    if (this.isAttacking) {
+      c.fillStyle = "green";
+      c.fillRect(
+        this.attackBox.position.x,
+        this.attackBox.position.y,
+        this.attackBox.width,
+        this.attackBox.height
+      );
+    }
   }
 
   update() {
@@ -83,6 +83,7 @@ const player = new Sprite({
 });
 
 player.draw();
+console.log(player);
 
 // enemy instantiation
 const enemy = new Sprite({
@@ -102,9 +103,9 @@ const enemy = new Sprite({
 });
 
 enemy.draw();
+console.log(enemy);
 
-console.log(player);
-
+// keys
 const keys = {
   a: {
     pressed: false,
@@ -122,11 +123,14 @@ const keys = {
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
-    rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
-    rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
-    rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+    rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
+      rectangle2.position.x &&
+    rectangle1.attackBox.position.x <=
+      rectangle2.position.x + rectangle2.width &&
+    rectangle1.attackBox.position.y + rectangle1.attackBox.height >=
+      rectangle2.position.y &&
     rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height
-  )
+  );
 }
 
 // animation loop
@@ -155,26 +159,38 @@ function animate() {
   }
 
   // detect for collision
+  // player
   if (
-    // player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-    // player.attackBox.position.x <= enemy.position.x + enemy.width &&
-    // player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-    // player.attackBox.position.y <= enemy.position.y + enemy.height &&
     rectangularCollision({
       rectangle1: player,
-      rectangle2: enemy
+      rectangle2: enemy,
     }) &&
     player.isAttacking
   ) {
     player.isAttacking = false;
-    document.querySelector('#enemyHealth').style.width = '20%';
+    enemy.health -= 20;
+    document.querySelector("#enemyHealth").style.width = enemy.health + "%";
+  }
+
+  // enemy
+  if (
+    rectangularCollision({
+      rectangle1: enemy,
+      rectangle2: player,
+    }) &&
+    enemy.isAttacking
+  ) {
+    enemy.isAttacking = false;
+    player.health -= 20;
+    document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 }
 
+// animate :P
 animate();
 
 window.addEventListener("keydown", (event) => {
-  console.log(event.key);
+  // console.log(event.key);
   switch (event.key) {
     case "d":
       keys.d.pressed = true;
@@ -201,8 +217,11 @@ window.addEventListener("keydown", (event) => {
     case "ArrowUp":
       enemy.velocity.y = -18; // creates jump effect by countering gravity
       break;
+    case "ArrowDown":
+      enemy.isAttacking = true;
+      break;
   }
-  console.log(event.key);
+  // console.log(event.key);
 });
 
 window.addEventListener("keyup", (event) => {
@@ -224,5 +243,5 @@ window.addEventListener("keyup", (event) => {
       keys.ArrowLeft.pressed = false;
       break;
   }
-  console.log(event.key);
+  // console.log(event.key);
 });

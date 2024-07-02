@@ -10,10 +10,22 @@
   <div style="position: relative; display: inline-block">
     <!-- smaller red container div -->
     <div
-      style="position: absolute; display: flex; width: 100%; align-self: center; padding: 20px"
+      style="
+        position: absolute;
+        display: flex;
+        width: 100%;
+        align-self: center;
+        padding: 20px;
+      "
     >
       <!-- player health -->
-      <div style="background-color: yellow; height: 30px; width: 100%"></div>
+      <div style="background-color: yellow; height: 30px; width: 100%">
+        <div style="background-color: yellow; height: 30px"></div>
+        <div
+          id="playerHealth"
+          stlye="position: absolute; background: blue; top: 0; right: 0; bottom: 0; left: 0;"
+        ></div>
+      </div>
       <!-- timer -->
       <div
         style="
@@ -24,7 +36,10 @@
         "
       ></div>
       <!-- enemy health -->
-      <div id="enemyHealth" style="background-color: yellow; height: 30px; width: 100%"></div>
+      <div
+        id="enemyHealth"
+        style="background-color: yellow; height: 30px; width: 100%"
+      ></div>
     </div>
     <canvas></canvas>
   </div>
