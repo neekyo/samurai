@@ -134,9 +134,38 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
+function determineWinner({ player, enemy, timerId }) {
+  clearTimeout(timerId)
+  document.querySelector("#displayText").style.display = "flex";
+  if (player.health === enemy.health) {
+    document.querySelector("#displayText").innerHTML = "Tie";
+  } else if (player.health > enemy.health) {
+    document.querySelector("#displayText").innerHTML = "Player 1 Wins";
+  } else if (player.health < enemy.health) {
+    document.querySelector("#displayText").innerHTML = "Player 2 Wins";
+  }
+}
+
+// timer
+let timer = 60;
+let timerId;
+function decreaseTimer() {
+  if (timer > 0) {
+    timerId = setTimeout(decreaseTimer, 1000); //infiite loop
+    timer--;
+    document.querySelector("#timer").innerHTML = timer;
+  }
+
+  if (timer === 0) {
+    determineWinner({ player, enemy, timerId });
+  }
+}
+
+decreaseTimer();
+
 // animation loop
 function animate() {
-  window.requestAnimationFrame(animate);
+  window.requestAnimationFrame(animate); // infinite loop
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
   player.update();
@@ -185,6 +214,11 @@ function animate() {
     player.health -= 20;
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
+
+  // end game based on health
+  if (enemy.health <= 0 || player.health <= 0) {
+    determineWinner({ player, enemy, timerId });
+  }
 }
 
 // animate :P
@@ -202,7 +236,7 @@ window.addEventListener("keydown", (event) => {
       player.lastKey = "a";
       break;
     case "w":
-      player.velocity.y = -18; // creates jump effect by countering gravity
+      player.velocity.y = -18; // negates gravity causing jump effect
       break;
     case " ":
       player.attack();
@@ -216,10 +250,11 @@ window.addEventListener("keydown", (event) => {
       enemy.lastKey = "ArrowLeft";
       break;
     case "ArrowUp":
-      enemy.velocity.y = -18; // creates jump effect by countering gravity
+      enemy.velocity.y = -18; // negates gravity causing jump effect
       break;
     case "ArrowDown":
-      enemy.isAttacking = true;
+      // enemy.isAttacking = true;
+      enemy.attack();
       break;
   }
   // console.log(event.key);
