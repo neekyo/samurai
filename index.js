@@ -7,9 +7,25 @@ canvas.height = 576;
 
 c.fillRect(0, 0, canvas.width, canvas.height);
 
-const gravity = 0.8;
+const gravity = 0.7;
 
 class Sprite {
+  constructor({ position }) {
+    this.position = position;
+    this.width = 50;
+    this.height = 150;
+  }
+
+  draw() {
+    
+  }
+
+  update() {
+    this.draw();
+  }
+}
+
+class Fighter {
   constructor({ position, velocity, color = "red", offset }) {
     this.position = position;
     this.velocity = velocity;
@@ -135,7 +151,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 }
 
 function determineWinner({ player, enemy, timerId }) {
-  clearTimeout(timerId)
+  clearTimeout(timerId);
   document.querySelector("#displayText").style.display = "flex";
   if (player.health === enemy.health) {
     document.querySelector("#displayText").innerHTML = "Tie";
