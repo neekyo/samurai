@@ -14,7 +14,7 @@ const background = new Sprite({
     x: 0,
     y: 0,
   },
-  imageSrc: "./assets/background/background1.png",
+  imageSrc: "./assets/background/background_layer_1.png",
 });
 
 const shop = new Sprite({
@@ -37,21 +37,32 @@ const player = new Fighter({
     x: 0,
     y: 0,
   },
-  offset: {
+  offset: { 
     x: 0,
     y: 0,
-  },
+  }, 
   imageSrc: "./assets/sprites/Idle.png",
   framesMax: 8,
   scale: 2.5,
   offset: {
     x: 215,
     y: 157
+  },
+  sprites: {
+    idle: {
+      imgSrc: "./assets/sprites/Idle.png", 
+      framesMax: 8
+    },
+    run: {
+      imgSrc: "./assets/sprites/Run.png",
+      framesMax: 8
+    },
+    jump: {
+      imgSrc: "./assets/sprites/Jump.png",
+      framesMax: 2
+    }
   }
 });
-
-player.draw();
-console.log(player);
 
 // enemy instantiation
 const enemy = new Fighter({
@@ -69,9 +80,6 @@ const enemy = new Fighter({
     y: 0,
   },
 });
-
-enemy.draw();
-console.log(enemy);
 
 // keys
 const keys = {
@@ -99,16 +107,24 @@ function animate() {
   background.update();
   shop.update();
   player.update();
-  // enemy.update();
+  // enemy.update(); // comment out until imgSrc associated
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
 
   // player movement
+  player.image = player.sprites.idle.image;
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -5; // -5px per frame
+    player.image = player.sprites.run.image; // breaks game when trying to switch from idle/run sprites
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = 5; // 5px per frame
+    player.image = player.sprites.run.image; // breaks game when trying to switch from idle/run sprites
+  }
+
+  if (player.velocity.y < 0) {
+    player.image = player.sprites.jump.image;
+    player.framesMax = player.sprites.jump.framesMax;
   }
 
   // enemy movement
