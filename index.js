@@ -14,7 +14,7 @@ const background = new Sprite({
     x: 0,
     y: 0,
   },
-  imageSrc: "./assets/background/background_layer_1.png",
+  imageSrc: "./assets/background/background.png",
 });
 
 const shop = new Sprite({
@@ -24,7 +24,7 @@ const shop = new Sprite({
   },
   imageSrc: "./assets/decorations/shop_anim.png",
   scale: 2.75,
-  framesMax: 6
+  framesMax: 6,
 });
 
 // player instantiation
@@ -37,31 +37,39 @@ const player = new Fighter({
     x: 0,
     y: 0,
   },
-  offset: { 
+  offset: {
     x: 0,
     y: 0,
-  }, 
-  imageSrc: "./assets/sprites/Idle.png",
+  },
+  imageSrc: "assets/character/samuraiMack/Idle.png",
   framesMax: 8,
   scale: 2.5,
   offset: {
     x: 215,
-    y: 157
+    y: 157,
   },
   sprites: {
     idle: {
-      imgSrc: "./assets/sprites/Idle.png", 
-      framesMax: 8
+      imgSrc: "assets/character/samuraiMack/Idle.png",
+      framesMax: 8,
     },
     run: {
-      imgSrc: "./assets/sprites/Run.png",
-      framesMax: 8
+      imgSrc: "assets/character/samuraiMack/Run.png",
+      framesMax: 8,
     },
     jump: {
-      imgSrc: "./assets/sprites/Jump.png",
-      framesMax: 2
-    }
-  }
+      imgSrc: "assets/character/samuraiMack/Jump.png",
+      framesMax: 2,
+    },
+    fall: {
+      imgSrc: "assets/character/samuraiMack/Fall.png",
+      framesMax: 2,
+    },
+    attack1: {
+      imgSrc: "assets/character/samuraiMack/Attack1.png",
+      framesMax: 6,
+    },
+  },
 });
 
 // enemy instantiation
@@ -78,6 +86,35 @@ const enemy = new Fighter({
   offset: {
     x: -50,
     y: 0,
+  },
+  imageSrc: "assets/character/kenji/Idle.png",
+  framesMax: 8,
+  scale: 2.5,
+  offset: {
+    x: 215,
+    y: 157,
+  },
+  sprites: {
+    idle: {
+      imgSrc: "assets/character/kenji/Idle.png",
+      framesMax: 8,
+    },
+    run: {
+      imgSrc: "assets/character/kenji/Run.png",
+      framesMax: 8,
+    },
+    jump: {
+      imgSrc: "assets/character/kenji/Jump.png",
+      framesMax: 2,
+    },
+    fall: {
+      imgSrc: "assets/character/kenji/Fall.png", 
+      framesMax: 2,
+    },
+    attack1: {
+      imgSrc: "assets/character/kenji/Attack1.png",
+      framesMax: 6,
+    },
   },
 });
 
@@ -107,24 +144,27 @@ function animate() {
   background.update();
   shop.update();
   player.update();
-  // enemy.update(); // comment out until imgSrc associated
+  enemy.update(); // comment out until imgSrc associated
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
 
   // player movement
-  player.image = player.sprites.idle.image;
+  player.switchSprite("idle");
+
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -5; // -5px per frame
-    player.image = player.sprites.run.image; // breaks game when trying to switch from idle/run sprites
+    player.switchSprite("run");
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = 5; // 5px per frame
-    player.image = player.sprites.run.image; // breaks game when trying to switch from idle/run sprites
+    player.switchSprite("run");
   }
 
+  // jumping
   if (player.velocity.y < 0) {
-    player.image = player.sprites.jump.image;
-    player.framesMax = player.sprites.jump.framesMax;
+    player.switchSprite("jump");
+  } else if (player.velocity.y > 0) {
+    player.switchSprite("fall");
   }
 
   // enemy movement
