@@ -73,6 +73,10 @@ const player = new Fighter({
       imageSrc: "./img/samuraiMack/Take Hit 2.png",
       framesMax: 4,
     },
+    death: {
+      imageSrc: "./img/samuraiMack/Death.png",
+      framesMax: 6,
+    },
   },
   attackBox: {
     offset: {
@@ -131,6 +135,10 @@ const enemy = new Fighter({
       imageSrc: "./img/kenji/Take hit.png",
       framesMax: 3,
     },
+    death: {
+      imageSrc: "./img/kenji/Death.png",
+      framesMax: 7,
+    },
   },
   attackBox: {
     offset: {
@@ -177,14 +185,14 @@ function animate() {
   enemy.velocity.x = 0;
 
   // player movement
-  player.switchSprite("idle");
-
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -5; // -5px per frame
     player.switchSprite("run");
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.velocity.x = 5; // 5px per frame
     player.switchSprite("run");
+  } else {
+    player.switchSprite("idle");
   }
 
   // player jumping
@@ -212,7 +220,7 @@ function animate() {
     enemy.switchSprite("fall");
   }
 
-  // detect for collision & enemy gets hit
+  // detect for collision & when enemy gets hit
   // player collision
   if (
     rectangularCollision({
@@ -232,7 +240,7 @@ function animate() {
     player.isAttacking = false;
   }
 
-  // enemy collision
+  // enemy collision & when player gets hit
   if (
     rectangularCollision({
       rectangle1: enemy,
@@ -241,8 +249,8 @@ function animate() {
     enemy.isAttacking &&
     enemy.framesCurrent === 2
   ) {
+    player.takeHit();
     enemy.isAttacking = false;
-    player.health -= 20;
     document.querySelector("#playerHealth").style.width = player.health + "%";
   }
 
@@ -262,36 +270,43 @@ animate();
 
 window.addEventListener("keydown", (event) => {
   // console.log(event.key);
-  switch (event.key) {
-    case "d":
-      keys.d.pressed = true;
-      player.lastKey = "d";
-      break;
-    case "a":
-      keys.a.pressed = true;
-      player.lastKey = "a";
-      break;
-    case "w":
-      player.velocity.y = -18; // negates gravity causing jump effect
-      break;
-    case " ":
-      player.attack();
-      break;
-    case "ArrowRight":
-      keys.ArrowRight.pressed = true;
-      enemy.lastKey = "ArrowRight";
-      break;
-    case "ArrowLeft":
-      keys.ArrowLeft.pressed = true;
-      enemy.lastKey = "ArrowLeft";
-      break;
-    case "ArrowUp":
-      enemy.velocity.y = -18; // negates gravity causing jump effect
-      break;
-    case "ArrowDown":
-      // enemy.isAttacking = true; // hides sword
-      enemy.attack();
-      break;
+  if (!player.dead) {
+    switch (event.key) {
+      case "d":
+        keys.d.pressed = true;
+        player.lastKey = "d";
+        break;
+      case "a":
+        keys.a.pressed = true;
+        player.lastKey = "a";
+        break;
+      case "w":
+        player.velocity.y = -18; // negates gravity causing jump effect
+        break;
+      case " ":
+        player.attack();
+        break;
+    }
+  }
+
+  if (!enemy.dead) {
+    switch (event.key) {
+      case "ArrowRight":
+        keys.ArrowRight.pressed = true;
+        enemy.lastKey = "ArrowRight";
+        break;
+      case "ArrowLeft":
+        keys.ArrowLeft.pressed = true;
+        enemy.lastKey = "ArrowLeft";
+        break;
+      case "ArrowUp":
+        enemy.velocity.y = -18; // negates gravity causing jump effect
+        break;
+      case "ArrowDown":
+        // enemy.isAttacking = true; // hides sword
+        enemy.attack();
+        break;
+    }
   }
   // console.log(event.key);
 });
