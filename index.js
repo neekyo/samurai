@@ -259,7 +259,7 @@ function animate() {
     enemy.isAttacking = false;
 
     // document.querySelector("#playerHealth").style.width = player.health + "%";
-    gsap.to("#enemyHealth", {
+    gsap.to("#playerHealth", {
       width: player.health + "%"
     })
   }
