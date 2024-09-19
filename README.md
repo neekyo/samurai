@@ -29,7 +29,7 @@ Player 2:
     attack: <b>DOWN</b>
     <br>
 
-### View Here @ [Netlify](https://samurai-fight-2d.netlify.app/)
+## PLAY HERE @ [Netlify](https://samurai-fight-2d.netlify.app/)
 
 ### Preview
 
